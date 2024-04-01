@@ -1,0 +1,55 @@
+To install the AWS CloudWatch Logs agent on Ubuntu, you can follow the steps below:
+
+1. Launch an EC2 instance running Ubuntu in your AWS account.
+2. Connect to the instance using SSH.
+
+3. Update the package lists on your Ubuntu instance by running the following command:
+
+   ```shell
+   sudo apt update
+   ```
+
+4. Install the CloudWatch Logs agent package by running the following command:
+
+   ```shell
+   sudo apt install awscli -y
+   ```
+
+5. Configure AWS credentials by running the following command:
+
+   ```shell
+   aws configure
+   ```
+
+   Enter your AWS Access Key ID, Secret Access Key, default region, and output format when prompted.
+
+6. Download and install the CloudWatch Logs agent using the following command:
+
+   ```shell
+   wget https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py
+   sudo python3 awslogs-agent-setup.py -n -r <your-region>
+   ```
+
+   Replace `<your-region>` with the appropriate AWS region code, such as `us-east-1` or `eu-west-1`.
+
+7. During the installation, you will be prompted for various configuration settings. Provide the requested information, such as the CloudWatch Logs group name and the log file paths you want to monitor.
+
+8. Once the installation is complete, start the CloudWatch Logs agent:
+
+   ```shell
+   sudo service awslogs start
+   ```
+
+9. To enable the CloudWatch Logs agent to start automatically on system boot, run the following command:
+
+   ```shell
+   sudo systemctl enable awslogs
+   ```
+
+10. Verify that the agent is running and there are no errors by checking the agent's status:
+
+    ```shell
+    sudo service awslogs status
+    ```
+
+That's it! You have now installed and configured the AWS CloudWatch Logs agent on your Ubuntu instance. It will start collecting and sending logs to CloudWatch based on your configuration. You can monitor and analyze the logs in the AWS Management Console.

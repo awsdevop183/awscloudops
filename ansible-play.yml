@@ -1,0 +1,53 @@
+---
+- hosts: k8s-nodes
+  become: true
+  vars:
+    k8s_version: "1.22.3-00"
+    network_cidr: "10.244.0.0/16"
+    pod_cidr: "192.168.0.0/16"
+    api_server_advertise_address: "{{ ansible_host }}"
+  tasks:
+    - name: Update packages
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Docker
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - docker.io
+        - python3-pip
+
+    - name: Install Kubernetes packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - kubelet={{ k8s_version }}
+        - kubeadm={{ k8s_version }}
+        - kubectl={{ k8s_version }}
+
+    - name: Initialize Kubernetes cluster
+      command: kubeadm init --apiserver-advertise-address {{ api_server_advertise_address }} --pod-network-cidr {{ pod_cidr }}
+      register: kubeadm_init
+      changed_when: kubeadm_init.stdout_lines[0] | search('kubeadm join')
+
+    - name: Install Calico network plugin
+      command: kubectl apply -f https://docs.projectcalico.org/{{ calico_version }}/manifests/calico.yaml
+      when: kubeadm_init.changed
+
+    - name: Copy kubeconfig file to user's home directory
+      copy:
+        content: "{{ lookup('file', '/etc/kubernetes/admin.conf') }}"
+        dest: "{{ lookup('env','HOME') }}/.kube/config"
+        force: yes
+        mode: 0600
+
+    - name: Copy kubeconfig file to /root directory
+      copy:
+        content: "{{ lookup('file', '/etc/kubernetes/admin.conf') }}"
+        dest: "/root/.kube/config"
+        force: yes
+        mode: 0600
