@@ -1,6 +1,6 @@
 #!/bin/bash
 sudo apt update -y
-sudo apt install nginx -y
+# sudo apt install nginx -y
 sudo usermod -aG docker ubuntu
 sudo curl https://get.docker.com | bash
 sudo apt  install docker-compose -y
