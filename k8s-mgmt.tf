@@ -32,7 +32,7 @@ resource "aws_instance" "k8smgmt" {
 
 
 resource "aws_eip" "k8s" {
-  vpc      = true
+#   vpc      = true
   instance = aws_instance.k8smgmt.id
   tags = {
     Name = "k8s-eip"
