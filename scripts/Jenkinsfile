@@ -1,0 +1,15 @@
+pipeline {
+    agent {
+        docker {
+            image 'nginx:latest' 
+        }
+    }
+    stages {
+        stage('Create a container') {
+            steps {
+                sh 'docker run -d --name test -p 90:80 nginx'
+            }
+        }
+        
+    }
+}

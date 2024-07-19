@@ -35,3 +35,4 @@
 #     value =aws_instance.ansible-node01.public_ip
   
 # }
+
