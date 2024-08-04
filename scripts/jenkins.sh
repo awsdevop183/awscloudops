@@ -11,3 +11,4 @@ sudo apt-get install jenkins -y
 sudo systemctl start jenkins
 sudo systemctl enable jenkins
 curl https://get.docker.com | bash
+sudo usermod -aG docker jenkins
